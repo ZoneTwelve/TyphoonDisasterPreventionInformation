@@ -16,7 +16,7 @@ html, body {
   position:relative;
   left:5%;
   width:90%;
-  height:60%;
+  height:75%;
 }#header{
   height:8%;
 }#wrapper{
@@ -97,8 +97,7 @@ window.onload = function(){
     http.onreadystatechange = function(){
         if(this.readyState == 4&&this.status == 200){
             data = JSON.parse(this.responseText).DataSet['diffgr:diffgram'].NewDataSet.CASE_SUMMARY;
-            // data.length = 20;
-            initMap(data.slice(0, 20));
+            initMap(data.slice(0, 50));
             console.log(data);
             setOptions(data);
         }
@@ -132,6 +131,8 @@ function setOptions(data){
 
 function filterData(){
   var area = this.value;
+  console.log(area);
+  if(area=='全部')return initMap(data);
   var result = data.filter(function(val){
     return val.CaseLocationDistrict==area;
   })
