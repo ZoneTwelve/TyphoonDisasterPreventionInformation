@@ -146,7 +146,7 @@ function initMap(data) {
     var maps = new google.maps.Map(document.querySelector('div#map'), {
         zoom: 11,
         center: locations,
-        styles:[{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"color":"#000000"},{"lightness":13}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#144b53"},{"lightness":14},{"weight":1.4}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#08304b"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#0c4152"},{"lightness":5}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#0b434f"},{"lightness":25}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"color":"#0b3d51"},{"lightness":16}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"}]},{"featureType":"transit","elementType":"all","stylers":[{"color":"#146474"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#021019"}]}]
+        // styles:[{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"color":"#000000"},{"lightness":13}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#144b53"},{"lightness":14},{"weight":1.4}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#08304b"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#0c4152"},{"lightness":5}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#0b434f"},{"lightness":25}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"color":"#0b3d51"},{"lightness":16}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"}]},{"featureType":"transit","elementType":"all","stylers":[{"color":"#146474"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#021019"}]}]
     });
 
     var contentString = `<h1>Hello ${Math.floor(Math.random()*10)}</h1>`;
@@ -169,8 +169,8 @@ function initMap(data) {
 </div>
 <p>地區: <b>${val.CaseLocationDistrict}</b>｜時間: <b>${val.CaseTime}</b></p>
 <p>災害: <b>${val.DPName}</b>｜災情: <b>${val.PName}</b></p>
-<p>地址: <b><a href="javascript:window.open('https://www.google.com.tw/maps/search/${val.CaseLocationDescription}')">${val.CaseLocationDescription}</a></b></p>
-<p>通報單位: <b>${val.CaseCommunicatorUnit}</b></p>
+<p>地址: <b><a href="javascript:window.open('https://www.google.com.tw/maps/place/@${val.Wgs84Y},${val.Wgs84X},25z')">${val.CaseLocationDescription}</a></b></p>
+<p>處理單位: <b>${val.CaseCommunicatorUnit}</b></p>
 <p>是否解決: <b>${val.CaseComplete=='true'?'是':'否'}</:b></p>
 `
         })
