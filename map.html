@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<meta charset="utf-8">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<title>Google Maps</title>
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+}
+#map{
+  position:relative;
+  left:5%;
+  width:90%;
+  height:60%;
+}#header{
+  height:8%;
+}#wrapper{
+  padding:0% 10%;
+}#app{
+  width:90%;
+  position:relative;
+  left:5%;
+}.pageBox{
+  height:50px;
+}
+</style>
+</head>
+<body>
+<!--button id="show">打開Maps</button-->
+<div id="header">
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">臺北市颱風災害即時資訊</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="index.html">列表版</a></li>
+                <li class="active"><a href="#">地圖版</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</div>
+<div id="app">
+  <h2 class="sub-header">最新消息(地圖版)</b></h2>
+  <div class="form-group">
+    <label for="area" class="col-xs-6 col-md-2 control-label">
+      <b class="lead">區域：</b>
+    </label>
+    <div class="col-xs-6 col-md-4">
+      <select id="area" class="form-control">
+        <option value="null">請稍候</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div id="wrapper">
+</div>
+<div id="map"></div>
+<!--
+<div class="text-center pageBox">
+  <ul class="pagination">
+    <li class=""><a href="#" value="上一頁">&lt;&lt;</a></li>
+    <li class="active">
+      <a href="#">1</a>
+    </li><li>
+      <a href="#">2</a>
+    </li><li>
+      <a href="#">3</a>
+    </li><li>
+      <a href="#">4</a>
+    </li><li>
+      <a href="#">5</a>
+    </li>
+    <li class=""><a href="#" value="下一頁"> &gt;&gt; </a></li>
+  </ul>
+</div>
+-->
+<script>
+const http = new XMLHttpRequest();
+const api = "https://tcgbusfs.blob.core.windows.net/blobfs/GetDisasterSummary.json";
+var data;
+var select = [];
+window.onload = function(){
+    http.onreadystatechange = function(){
+        if(this.readyState == 4&&this.status == 200){
+            data = JSON.parse(this.responseText).DataSet['diffgr:diffgram'].NewDataSet.CASE_SUMMARY;
+            // data.length = 20;
+            initMap(data.slice(0, 20));
+            console.log(data);
+            setOptions(data);
+        }
+    }
+    http.open("GET", api, true);
+    http.send();
+}
+
+function setOptions(data){
+  var list = ['全部'];
+
+  var select = document.querySelector("#area");
+  select.innerHTML = '';
+  select.onchange = filterData;
+  var tmp = document.createElement("option");
+  tmp.value = list[0];
+  tmp.textContent = list[0];
+  select.appendChild(tmp);
+
+  data.map(function(el){
+      var loc = el.CaseLocationDistrict;
+      if(list.indexOf(loc)==-1){
+        var tmp = document.createElement("option");
+        tmp.value = loc;
+        tmp.textContent = loc;
+        list.push(loc);
+        select.appendChild(tmp)
+      }
+  })
+}
+
+function filterData(){
+  var area = this.value;
+  var result = data.filter(function(val){
+    return val.CaseLocationDistrict==area;
+  })
+  return initMap(result);
+}
+
+function initMap(data) {
+    this.locations = {
+        lat:25.05,
+        lng:121.55
+    };
+    var maps = new google.maps.Map(document.querySelector('div#map'), {
+        zoom: 11,
+        center: locations,
+        styles:[{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"color":"#000000"},{"lightness":13}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#144b53"},{"lightness":14},{"weight":1.4}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#08304b"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#0c4152"},{"lightness":5}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#0b434f"},{"lightness":25}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"color":"#0b3d51"},{"lightness":16}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"}]},{"featureType":"transit","elementType":"all","stylers":[{"color":"#146474"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#021019"}]}]
+    });
+
+    var contentString = `<h1>Hello ${Math.floor(Math.random()*10)}</h1>`;
+    var list = data?data:[];
+    console.log('list',list);
+    list.map(function(val){
+        var marker = new google.maps.Marker({
+            position:{
+                lat:Number(val.Wgs84Y), 
+                lng:Number(val.Wgs84X)
+            },
+            map:maps,
+            icon:val.CaseComplete=='true'?'http://i.imgur.com/7k2Z3Nl.png':'https://www.shareicon.net/download/2015/08/18/86945_warning.svg',
+            title:`區域:${val.CaseLocationDistrict}, 說明:${val.CaseDescription}`
+        });
+        var infowindow = new google.maps.InfoWindow({
+            content:`
+<div style="text-align:center">
+	<h1>${val.Name}</h1>
+</div>
+<p>地區: <b>${val.CaseLocationDistrict}</b>｜時間: <b>${val.CaseTime}</b></p>
+<p>災害: <b>${val.DPName}</b>｜災情: <b>${val.PName}</b></p>
+<p>地址: <b><a href="javascript:window.open('https://www.google.com.tw/maps/search/${val.CaseLocationDescription}')">${val.CaseLocationDescription}</a></b></p>
+<p>通報單位: <b>${val.CaseCommunicatorUnit}</b></p>
+<p>是否解決: <b>${val.CaseComplete=='true'?'是':'否'}</:b></p>
+`
+        })
+        marker.addListener('click',function() {
+            infowindow.open(maps, this);
+        });
+        // marker.addListener('mouseout',function() {
+            // infowindow.close();
+        // });
+    })
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnSNkJ-Z2-cVE9cg1wRDRRUB8gxyuGJ7M&callback=initMap" async defer>
+</script>
+</body>
+</html>
