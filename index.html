@@ -107,6 +107,7 @@
                 <button class="btn btn-success" v-for="obj in getNewList" @click="setPage(obj.add)"/>{{ obj.val }}</button>
                 <input class="btn btn-success" type="button" @click="setPage(1)" value="下一頁"/>
                 -->
+                </div>
                 <div class="text-center pageBox">
                   <ul class="pagination">
                     <li class=""><a href="#" @click="setPage(-1)" value="上一頁">&lt;&lt;</a></li>
@@ -115,7 +116,6 @@
                     </li>
                     <li class=""><a href="#" @click="setPage(1)" value="下一頁"> &gt;&gt; </a></li>
                   </ul>
-                </div>
                 </div>
             </div>
             <a style="position:fixed;bottom:5px;right:5px;color:white;background:#337ab7;padding:8px 15px;border-radius:5px;" href="#main">top</a>
